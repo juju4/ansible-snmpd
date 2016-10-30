@@ -1,0 +1,8 @@
+---
+
+snmpd_clients: [ 10.1.1.1 ]
+snmpd_v2_source: 10.0.0.0/8
+snmpd_v2_snmpcommunity: public
+
+snmpd_ipv6: true
+

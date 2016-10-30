@@ -1,0 +1,60 @@
+---
+
+- name: Review snmpd configuration
+  replace:
+    dest='/etc/snmp/snmpd.conf' regexp="{{ item.regexp }}" replace='{{ item.replace }}' backup=yes
+  with_items:
+#    - { regexp: '^agentAddress  udp:127.0.0.1:161', replace: '#agentAddress  udp:127.0.0.1:161' }
+#    - { regexp: '^#agentAddress udp:161,udp6:\[::1\]:161', replace: 'agentAddress udp:161,udp6:[::1]:161' }
+#    - { regexp: '^ rocommunity public  default    -V systemonly', replace: ' rocommunity {{ snmpd_v2_snmpcommunity }}  default    -V systemonly' }
+    - { regexp: '^ rocommunity6 public  default   -V systemonly', replace: '# rocommunity6 public  default   -V systemonly' }
+    - { regexp: '^ extend    test1', replace: '# extend    test1' }
+    - { regexp: '^ extend-sh test2', replace: '# extend-sh test2' }
+## /etc/snmp/snmpd.conf: line 143: Warning: Unknown token: defaultMonitors.
+## /etc/snmp/snmpd.conf: line 145: Warning: Unknown token: linkUpDownNotifications.
+    - { regexp: '^defaultMonitors', replace: '#defaultMonitors' }
+    - { regexp: '^linkUpDownNotifications', replace: '#linkUpDownNotifications' }
+  notify:
+    - restart snmpd
+## FIXME! to be repeated for each servers
+- name: Review snmpd configuration (2)
+  lineinfile:
+    dest='/etc/snmp/snmpd.conf' regexp="{{ item.regexp }}" line='{{ item.replace }}' backup=yes insertafter='^#rocommunity secret'
+  with_items:
+    - { regexp: '^rocommunity \w+ [0-9a-fA-F\.:\/]+', replace: 'rocommunity {{ snmpd_v2_snmpcommunity }} {{ snmpd_v2_source }}' }
+  notify:
+    - restart snmpd
+
+- name: Enable IPv6 in snmpd.conf
+  replace:
+    dest='/etc/snmp/snmpd.conf' regexp="{{ item.regexp }}" replace='{{ item.replace }}'
+  with_items:
+    - { regexp: '^agentAddress .*', replace: 'agentAddress udp:161,udp6:[::1]:161' }
+  when: snmpd_ipv6 is defined and snmpd_ipv6
+  notify:
+    - restart snmpd
+- name: Disable IPv6 in snmpd.conf
+  replace:
+    dest='/etc/snmp/snmpd.conf' regexp="{{ item.regexp }}" replace='{{ item.replace }}'
+  with_items:
+    - { regexp: '^agentAddress .*', replace: 'agentAddress udp:161' }
+  when: snmpd_ipv6 is not defined or not snmpd_ipv6
+  notify:
+    - restart snmpd
+
+## https://bugs.launchpad.net/ubuntu/+source/net-snmp/+bug/1246347  "error on subcontainer ‘ia_addr’ insert (-1)"
+- name: suppress buggy snmpd error messages
+  replace: dest=/etc/default/snmpd regexp='-Lsd' replace='-LS6d' backup=yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  notify:
+    - restart snmpd
+
+- name: restrict snmpd with hosts.deny
+  lineinfile: dest=/etc/hosts.deny line='snmpd:ALL' backup=yes create=yes
+- name: restrict snmpd with hosts.allow
+  lineinfile: dest=/etc/hosts.allow line="snmpd:{{ item }}" backup=yes create=yes
+  with_items: "{{ snmpd_clients }}"
+
+- name: ensure service is enabled and started
+  service: name=snmpd state=started enabled=yes
+

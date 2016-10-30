@@ -1,0 +1,10 @@
+---
+
+- name: Include version-specific variables for Ubuntu.
+  include_vars: "{{ ansible_distribution }}.yml"
+
+- name: snmpd package install
+  package: name={{snmpd_packages}} state=present
+
+- include: snmpd.yml
+
