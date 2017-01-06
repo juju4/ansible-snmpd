@@ -1,10 +1,19 @@
 ---
 
-- name: Include version-specific variables for Ubuntu.
+- name: Include distribution-specific variables
   include_vars: "{{ ansible_distribution }}.yml"
 
 - name: snmpd package install
-  package: name={{snmpd_packages}} state=present
+  package: name={{ snmpd_packages }} state=present
+  when: ansible_system == 'Linux'
+
+- name: snmpd client install
+  package: name={{ snmp_packages }} state=present
+  when: snmpd_with_client
 
 - include: snmpd.yml
+  when: ansible_system == 'Linux'
+
+- include: snmpd-darwin.yml
+  when: ansible_system == 'Darwin'
 

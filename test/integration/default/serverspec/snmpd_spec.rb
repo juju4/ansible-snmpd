@@ -8,7 +8,7 @@ describe package('net-snmp'), :if => os[:family] == 'redhat' do
   it { should be_installed }
 end
 
-describe package('snmpd'), :if => os[:family] == 'ubuntu' do
+describe package('snmpd'), :if => os[:family] == 'ubuntu' || os[:family] == 'debian' do
   it { should be_installed }
 end
 
@@ -17,7 +17,7 @@ describe service('snmpd'), :if => os[:family] == 'redhat' do
   it { should be_running }
 end
 
-describe service('snmpd'), :if => os[:family] == 'ubuntu' do
+describe service('snmpd'), :if => os[:family] == 'ubuntu' || os[:family] == 'debian' do
   it { should be_enabled }
   it { should be_running }
 end
@@ -33,5 +33,20 @@ end
 
 describe port(161) do
   it { should be_listening }
+end
+
+describe command('snmpwalk -c public -v 2c localhost'), :if => os[:family] == 'ubuntu' || os[:family] == 'debian' do
+  its(:stdout) { should match /iso.3.6.1.2.1.1.4.0 = STRING: "Me <me@example.org>"/ }
+  its(:stdout) { should match /iso.3.6.1.2.1.1.6.0 = STRING: "Sitting on the Dock of the Bay"/ }
+  its(:stdout) { should match /STRING: "The MIB for Message Processing and Dispatching."/ }
+  its(:stderr) { should_not match /Timeout: No Response from localhost/ }
+  its(:exit_status) { should eq 0 }
+end
+describe command('snmpwalk -c public -v 2c localhost'), :if => os[:family] == 'redhat' do
+  its(:stdout) { should match /SNMPv2-MIB::sysContact.0 = STRING: Me <me@example.org>/ }
+  its(:stdout) { should match /SNMPv2-MIB::sysLocation.0 = STRING: Sitting on the Dock of the Bay/ }
+  its(:stdout) { should match /SNMPv2-MIB::sysORDescr.1 = STRING: The MIB for Message Processing and Dispatching./ }
+  its(:stderr) { should_not match /Timeout: No Response from localhost/ }
+  its(:exit_status) { should eq 0 }
 end
 

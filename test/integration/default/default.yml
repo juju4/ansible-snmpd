@@ -1,6 +1,8 @@
 ---
 
 - hosts: all
+  vars:
+    - snmpd_with_client: true
   roles:
     - juju4.snmpd
 
