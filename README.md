@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/juju4/ansible-snmpd.svg?branch=master)](https://travis-ci.org/juju4/ansible-snmpd)
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-snmpd.svg?branch=master)](https://travis-ci.org/juju4/ansible-snmpd)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-snmpd.svg?branch=devel)](https://travis-ci.org/juju4/ansible-snmpd/branches)
 # SNMPd ansible role
 
 Ansible role to setup snmpd.
@@ -9,6 +10,7 @@ Ansible role to setup snmpd.
 It was tested on the following versions:
  * 1.9
  * 2.0
+ * 2.2
 
 ### Operating systems
 
@@ -23,7 +25,7 @@ For example
 ```
 - host: all
   roles:
-    - snmpd
+    - juju4.snmpd
 ```
 
 ## Variables
@@ -39,13 +41,13 @@ This role has a travis basic test (for github), more advanced with kitchen and a
 
 Once you ensured all necessary roles are present, You can test with:
 ```
-$ cd /path/to/roles/snmpd
+$ cd /path/to/roles/juju4.snmpd
 $ kitchen verify
 $ kitchen login
 ```
 or
 ```
-$ cd /path/to/roles/snmpd/test/vagrant
+$ cd /path/to/roles/juju4.snmpd/test/vagrant
 $ vagrant up
 $ vagrant ssh
 ```
