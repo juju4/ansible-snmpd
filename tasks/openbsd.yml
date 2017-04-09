@@ -1,0 +1,11 @@
+---
+
+- name: configure openbsd snmpd
+  template:
+    src: openbsd-snmpd.conf.j2
+    dest: /etc/snmpd.conf
+    mode: '0644'
+    backup: yes
+  notify:
+    - reload openbsd snmpd
+

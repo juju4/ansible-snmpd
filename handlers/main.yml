@@ -10,3 +10,9 @@
     - launchctl load -w /Library/LaunchDaemons/org.macports.net-snmp.plist
   when: ansible_os_family == 'Darwin'
 
+- name: reload openbsd snmpd
+  command: "{{ item }}"
+  with_items:
+    - rcctl stop snmpd
+    - rcctl start snmpd
+

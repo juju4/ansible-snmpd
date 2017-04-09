@@ -17,3 +17,6 @@
 - include: snmpd-darwin.yml
   when: ansible_system == 'Darwin'
 
+- include: openbsd.yml
+  when: ansible_system == 'OpenBSD'
+
