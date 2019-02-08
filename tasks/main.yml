@@ -12,6 +12,8 @@
 - name: snmpd client install
   package: name={{ snmp_packages }} state=present
   when: snmpd_with_client
+  register: pkg_result
+  until: pkg_result is success
 
 - include: snmpd.yml
   when: ansible_system == 'Linux'

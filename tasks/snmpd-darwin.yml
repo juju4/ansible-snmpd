@@ -1,7 +1,8 @@
 ---
 
 ## FIXME! should install macports when not existing
-- stat: path=/opt/local/var/macports
+- name: Check if macports is present
+  stat: path=/opt/local/var/macports
   register: macportsdir
 - name: darwin | Macports net-snmp package
   macports: name=net-snmp state=present update_cache=yes
@@ -11,7 +12,8 @@
 
 - name: ensure config directory exists
   file: dest=/opt/local/etc/snmp state=directory mode=0755
-- stat: path=/opt/local/etc/snmp/snmpd.conf
+- name: Check if macports snmpd.conf exists
+  stat: path=/opt/local/etc/snmp/snmpd.conf
   register: nconf
 - name: darwin | configure snmpd
   template: src=snmpd.conf.j2 dest=/opt/local/etc/snmp/snmpd.conf mode=0644 backup=yes

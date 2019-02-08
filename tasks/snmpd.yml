@@ -19,7 +19,11 @@
 - name: restrict snmpd with hosts.deny
   lineinfile: dest=/etc/hosts.deny line='snmpd:ALL' backup=yes create=yes
 - name: restrict snmpd with hosts.allow
-  lineinfile: dest=/etc/hosts.allow line="snmpd:{{ item }}" backup=yes create=yes
+  lineinfile:
+    dest: /etc/hosts.allow
+    line: "snmpd:{{ item }}"
+    backup: yes
+    create: yes
   with_items: "{{ snmpd_clients }}"
 
 - name: ensure service is enabled and started
