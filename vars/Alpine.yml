@@ -2,4 +2,3 @@
 
 snmpd_packages: 'net-snmp'
 snmp_packages: 'net-snmp-tools'
-

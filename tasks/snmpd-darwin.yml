@@ -4,10 +4,10 @@
 - stat: path=/opt/local/var/macports
   register: macportsdir
 - name: darwin | Macports net-snmp package
-  macports: name={{ item }} state=present update_cache=yes
-  with_items:
-    - net-snmp
+  macports: name=net-snmp state=present update_cache=yes
   when: macportsdir.stat.exists
+  register: pkg_result
+  until: pkg_result is success
 
 - name: ensure config directory exists
   file: dest=/opt/local/etc/snmp state=directory mode=0755
@@ -17,4 +17,3 @@
   template: src=snmpd.conf.j2 dest=/opt/local/etc/snmp/snmpd.conf mode=0644 backup=yes
   notify:
     - restart snmpd - darwin
-

@@ -17,4 +17,3 @@ snmpd_agentx: false
 
 ## install also snmpget, snmpwalk...
 snmpd_with_client: false
-

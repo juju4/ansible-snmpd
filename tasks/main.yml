@@ -6,6 +6,8 @@
 - name: snmpd package install
   package: name={{ snmpd_packages }} state=present
   when: ansible_system == 'Linux'
+  register: pkg_result
+  until: pkg_result is success
 
 - name: snmpd client install
   package: name={{ snmp_packages }} state=present
@@ -19,4 +21,3 @@
 
 - include: openbsd.yml
   when: ansible_system == 'OpenBSD'
-

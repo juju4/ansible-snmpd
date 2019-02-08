@@ -2,4 +2,3 @@
 
 snmpd_packages: 'snmpd'
 snmp_packages: 'snmp'
-

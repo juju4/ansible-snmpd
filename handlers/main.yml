@@ -15,4 +15,3 @@
   with_items:
     - rcctl stop snmpd
     - rcctl start snmpd
-
