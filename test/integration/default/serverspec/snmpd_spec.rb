@@ -49,4 +49,3 @@ describe command('snmpwalk -c public -v 2c localhost'), :if => os[:family] == 'r
   its(:stderr) { should_not match /Timeout: No Response from localhost/ }
   its(:exit_status) { should eq 0 }
 end
-

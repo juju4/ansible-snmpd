@@ -35,4 +35,3 @@ ps axu | grep supervisor
 [ X`which journalctl` != 'X' ] && journalctl -xe --no-pager
 apt-get -f -y install
 true
-

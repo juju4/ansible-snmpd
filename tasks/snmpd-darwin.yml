@@ -2,7 +2,7 @@
 
 ## FIXME! should install macports when not existing
 - name: Check if macports is present
-  stat: path=/opt/local/var/macports
+  ansible.builtin.stat: path=/opt/local/var/macports
   register: macportsdir
 - name: darwin | Macports net-snmp package
   macports: name=net-snmp state=present update_cache=yes
@@ -11,11 +11,11 @@
   until: pkg_result is success
 
 - name: ensure config directory exists
-  file: dest=/opt/local/etc/snmp state=directory mode=0755
+  ansible.builtin.file: dest=/opt/local/etc/snmp state=directory mode=0755
 - name: Check if macports snmpd.conf exists
-  stat: path=/opt/local/etc/snmp/snmpd.conf
+  ansible.builtin.stat: path=/opt/local/etc/snmp/snmpd.conf
   register: nconf
 - name: darwin | configure snmpd
-  template: src=snmpd.conf.j2 dest=/opt/local/etc/snmp/snmpd.conf mode=0644 backup=yes
+  ansible.builtin.template: src=snmpd.conf.j2 dest=/opt/local/etc/snmp/snmpd.conf mode=0644 backup=yes
   notify:
     - restart snmpd - darwin

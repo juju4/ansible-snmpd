@@ -1,17 +1,17 @@
 ---
 
 - name: restart snmpd
-  service: name=snmpd state=restarted
+  ansible.builtin.service: name=snmpd state=restarted
 
 - name: restart snmpd - darwin
-  command: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   with_items:
     - launchctl unload -w /Library/LaunchDaemons/org.macports.net-snmp.plist
     - launchctl load -w /Library/LaunchDaemons/org.macports.net-snmp.plist
   when: ansible_os_family == 'Darwin'
 
 - name: reload openbsd snmpd
-  command: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   with_items:
     - rcctl stop snmpd
     - rcctl start snmpd

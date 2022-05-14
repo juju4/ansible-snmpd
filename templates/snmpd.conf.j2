@@ -87,7 +87,7 @@ view   systemonly  included   .1.3.6.1.2.1.25.1
 
 #  Note that setting these values here, results in the corresponding MIB objects being 'read-only'
 #  See snmpd.conf(5) for more details
-sysLocation    {{ snmpd_sysLocation }}
+sysLocation    {{ snmpd_syslocation }}
 sysContact     {{ snmpd_contact }}
                                                  # Application + End-to-End layers
 sysServices    72
@@ -150,7 +150,7 @@ load   12 10 5
 #  Event MIB - automatically generate alerts
 #
                                    # Remember to activate the 'createUser' lines above
-iquerySecName   internalUser       
+iquerySecName   internalUser
 rouser          internalUser
                                    # generate traps on UCD error conditions
 ## /etc/snmp/snmpd.conf: line 143: Warning: Unknown token: defaultMonitors.
@@ -208,4 +208,3 @@ rouser          internalUser
                                            #  Listen for network connections (from localhost)
                                            #    rather than the default named socket /var/agentx/master
 #agentXSocket    tcp:localhost:705
-

@@ -13,7 +13,7 @@ provisioner:
   ansible_verbose: false
   ansible_verbosity: 3
   ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
-#  name: chef_solo
+  # name: chef_solo
 
 platforms:
   - name: ubuntu-18.04

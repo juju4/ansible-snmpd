@@ -19,17 +19,17 @@ env:
     version: 16.04
     init: /lib/systemd/systemd
     run_opts: "'--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'"
-#    run_opts: ""
+    # run_opts: ""
 ## FIXME! travis fails on 'FAILED! => {"changed": false, "failed": true, "msg": " * Stopping network management services:\n * Starting network management services:\n"}' (ok in kitchen)
-#  - distribution: ubuntu
-#    version: 14.04
-#    init: /sbin/init
-#    run_opts: ""
+# - distribution: ubuntu
+#   version: 14.04
+#   init: /sbin/init
+#   run_opts: ""
 ## ansible2.4 requires python-cryptography, not available
-#  - distribution: ubuntu
-#    version: 12.04
-#    init: /sbin/init
-#    run_opts: ""
+# - distribution: ubuntu
+#   version: 12.04
+#   init: /sbin/init
+#   run_opts: ""
 
 services:
   - docker
@@ -48,7 +48,7 @@ before_install:
 
 script:
   - container_id=$(mktemp)
-    # Run container in detached state
+  # Run container in detached state
   - 'sudo docker run --detach --volume="${PWD%/*}":/etc/ansible/roles:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
 
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible --version'

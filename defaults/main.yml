@@ -1,6 +1,6 @@
 ---
 
-snmpd_sysLocation: 'Sitting on the Dock of the Bay'
+snmpd_syslocation: 'Sitting on the Dock of the Bay'
 snmpd_contact: 'Me <me@example.org>'
 
 snmpd_clients:
