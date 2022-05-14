@@ -83,7 +83,7 @@ jobs:
         continue-on-error: true
       - name: After script - systemd
         run: |
-          systemd-analyze --no-pager snmpd || true
+          systemd-analyze --no-pager status snmpd || true
           systemd-analyze --no-pager security || true
           rsyslogd -v
         if: ${{ always() }}
