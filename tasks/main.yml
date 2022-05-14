@@ -15,11 +15,11 @@
   register: pkg_result
   until: pkg_result is success
 
-- include: snmpd.yml
+- import_tasks: snmpd.yml
   when: ansible_system == 'Linux'
 
-- include: snmpd-darwin.yml
+- import_tasks: snmpd-darwin.yml
   when: ansible_system == 'Darwin'
 
-- include: openbsd.yml
+- import_tasks: openbsd.yml
   when: ansible_system == 'OpenBSD'
