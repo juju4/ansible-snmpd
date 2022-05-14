@@ -1,5 +1,3 @@
-[![Build Status - Master](https://travis-ci.org/juju4/ansible-snmpd.svg?branch=master)](https://travis-ci.org/juju4/ansible-snmpd)
-[![Build Status - Devel](https://travis-ci.org/juju4/ansible-snmpd.svg?branch=devel)](https://travis-ci.org/juju4/ansible-snmpd/branches)
 # SNMPd ansible role
 
 Ansible role to setup snmpd.
