@@ -1,0 +1,99 @@
+---
+name: default-bare
+
+on:
+  push:
+  pull_request:
+  schedule:  # run weekly, every Tuesday 03:00
+    - cron: '0 3 * * 2'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+    env:
+      ANSIBLE_CALLBACKS_ENABLED: profile_tasks
+      ANSIBLE_EXTRA_VARS: ""
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: juju4.snmpd
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip3 install ansible-lint flake8 yamllint
+          which ansible
+          pip3 install ansible
+          pip3 show ansible
+          ls -l $HOME/.local/bin || true
+          ls -l /opt/hostedtoolcache/Python/3.9.1/x64/bin || true
+          echo "/opt/hostedtoolcache/Python/3.9.1/x64/bin" >> $GITHUB_PATH
+          ansible --version
+          cd $GITHUB_WORKSPACE/juju4.snmpd
+          [ -f get-dependencies.sh ] && sh -x get-dependencies.sh
+          { echo '[defaults]'; echo 'callbacks_enabled = profile_tasks, timer'; echo 'roles_path = ../'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
+      - name: Environment
+        run: |
+          set -x
+          pwd
+          env
+          find -ls
+      - name: lsattr
+        run: |
+          set -x
+          sudo apt-get install -y e2fsprogs || true
+          sudo lsattr / -R -a 2> /dev/null | grep "\----i" > /tmp/lsattr-i-1 || true
+      - name: run test
+        run: |
+          cd $GITHUB_WORKSPACE/juju4.snmpd && ansible-playbook -i localhost, --connection=local --become -vvv test/integration/default/default.yml ${ANSIBLE_EXTRA_VARS}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+      - name: idempotency run
+        run: |
+          cd $GITHUB_WORKSPACE/juju4.snmpd && ansible-playbook -i localhost, --connection=local --become -vvv test/integration/default/default.yml ${ANSIBLE_EXTRA_VARS} | tee /tmp/idempotency.log | grep -q 'changed=0.*failed=0'  && (echo 'Idempotence test: pass' && exit 0)  || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 0)
+      - name: On failure
+        run: |
+          set -x
+          systemctl -l --no-pager status snmpd
+          systemctl -l --no-pager status
+          systemctl -l --no-pager --failed
+          ls -l /usr/bin/ | egrep '(python|pip|ansible)'
+          pip freeze
+          pip3 freeze
+          ip addr
+          cat /etc/resolv.conf
+          host www.google.com
+          ping -c 1 www.google.com || true
+          ping -c 1 8.8.8.8 || true
+        if: ${{ failure() }}
+        continue-on-error: true
+      - name: After script - ansible setup
+        run: |
+          ansible -i inventory --connection=local -m setup localhost
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - systemd
+        run: |
+          systemd-analyze --no-pager snmpd || true
+          systemd-analyze --no-pager security || true
+          rsyslogd -v
+        if: ${{ always() }}
+        continue-on-error: true
+      - name: After script - etc
+        run: |
+          set -x
+          cat /etc/snmp/snmpd.conf || true
+          cat /etc/default/snmpd || true
+          cat /etc/hosts.deny || true
+          cat /etc/hosts.allow || true
+        if: ${{ always() }}
+        continue-on-error: true
