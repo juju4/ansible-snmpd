@@ -4,18 +4,18 @@
 - name: Check if macports is present
   ansible.builtin.stat: path=/opt/local/var/macports
   register: macportsdir
-- name: darwin | Macports net-snmp package
+- name: Darwin | Macports net-snmp package
   macports: name=net-snmp state=present update_cache=yes
   when: macportsdir.stat.exists
   register: pkg_result
   until: pkg_result is success
 
-- name: ensure config directory exists
+- name: Ensure config directory exists
   ansible.builtin.file: dest=/opt/local/etc/snmp state=directory mode=0755
 - name: Check if macports snmpd.conf exists
   ansible.builtin.stat: path=/opt/local/etc/snmp/snmpd.conf
   register: nconf
-- name: darwin | configure snmpd
+- name: Darwin | configure snmpd
   ansible.builtin.template: src=snmpd.conf.j2 dest=/opt/local/etc/snmp/snmpd.conf mode=0644 backup=yes
   notify:
-    - restart snmpd - darwin
+    - Restart snmpd - darwin

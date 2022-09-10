@@ -7,23 +7,23 @@
     mode: 0640
     backup: yes
   notify:
-    - restart snmpd
+    - Restart snmpd
 
 ## https://bugs.launchpad.net/ubuntu/+source/net-snmp/+bug/1246347  "error on subcontainer ‘ia_addr’ insert (-1)"
-- name: suppress buggy snmpd error messages
+- name: Suppress buggy snmpd error messages
   ansible.builtin.replace: dest=/etc/default/snmpd regexp='-Lsd' replace='-LS6d' backup=yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   notify:
-    - restart snmpd
+    - Restart snmpd
 
-- name: restrict snmpd with hosts.deny
+- name: Restrict snmpd with hosts.deny
   ansible.builtin.lineinfile:
     dest: /etc/hosts.deny
     line: 'snmpd:ALL'
     mode: '0644'
     backup: yes
     create: yes
-- name: restrict snmpd with hosts.allow
+- name: Restrict snmpd with hosts.allow
   ansible.builtin.lineinfile:
     dest: /etc/hosts.allow
     line: "snmpd:{{ item }}"
@@ -32,5 +32,5 @@
     create: yes
   with_items: "{{ snmpd_clients }}"
 
-- name: ensure service is enabled and started
+- name: Ensure service is enabled and started
   ansible.builtin.service: name=snmpd state=started enabled=yes

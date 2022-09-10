@@ -3,13 +3,13 @@
 - name: Include distribution-specific variables
   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
 
-- name: snmpd package install
+- name: Snmpd package install
   ansible.builtin.package: name={{ snmpd_packages }} state=present
   when: ansible_system == 'Linux'
   register: pkg_result
   until: pkg_result is success
 
-- name: snmpd client install
+- name: Snmpd client install
   ansible.builtin.package: name={{ snmp_packages }} state=present
   when: snmpd_with_client
   register: pkg_result
