@@ -4,22 +4,29 @@
   ansible.builtin.include_vars: "{{ ansible_distribution }}.yml"
 
 - name: Snmpd package install
-  ansible.builtin.package: name={{ snmpd_packages }} state=present
+  ansible.builtin.package:
+    name: "{{ snmpd_packages }}"
+    state: "present"
   when: ansible_system == 'Linux'
   register: pkg_result
   until: pkg_result is success
 
 - name: Snmpd client install
-  ansible.builtin.package: name={{ snmp_packages }} state=present
+  ansible.builtin.package:
+    name: "{{ snmp_packages }}"
+    state: "present"
   when: snmpd_with_client
   register: pkg_result
   until: pkg_result is success
 
-- import_tasks: snmpd.yml
+- name: Import snmpd
+  ansible.builtin.import_tasks: snmpd.yml
   when: ansible_system == 'Linux'
 
-- import_tasks: snmpd-darwin.yml
+- name: Import snmpd-darwin
+  ansible.builtin.import_tasks: snmpd-darwin.yml
   when: ansible_system == 'Darwin'
 
-- import_tasks: openbsd.yml
+- name: Import openbsd
+  ansible.builtin.import_tasks: openbsd.yml
   when: ansible_system == 'OpenBSD'

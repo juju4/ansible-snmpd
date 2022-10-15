@@ -1,7 +1,9 @@
 ---
 
 - name: Restart snmpd
-  ansible.builtin.service: name=snmpd state=restarted
+  ansible.builtin.service:
+    name: snmpd
+    state: restarted
 
 - name: Restart snmpd - darwin
   ansible.builtin.command: "{{ item }}"

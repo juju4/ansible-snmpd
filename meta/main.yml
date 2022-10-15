@@ -1,6 +1,7 @@
 ---
 galaxy_info:
   author: juju4
+  role_name: snmpd
   description: Monitoring client setup with nrpe & snmp
   license: BSD
   min_ansible_version: '1.9'
