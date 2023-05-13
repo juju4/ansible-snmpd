@@ -1,7 +1,8 @@
 ---
 
-- hosts: all
+- name: Test integration playbook
+  hosts: all
   vars:
-    - snmpd_with_client: true
+    snmpd_with_client: true
   roles:
     - juju4.snmpd
