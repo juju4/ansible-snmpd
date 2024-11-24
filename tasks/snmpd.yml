@@ -4,7 +4,7 @@
   ansible.builtin.template:
     src: snmpd.conf.j2
     dest: '/etc/snmp/snmpd.conf'
-    mode: 0640
+    mode: '0640'
     backup: yes
   notify:
     - Restart snmpd
